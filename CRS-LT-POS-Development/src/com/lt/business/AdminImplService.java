@@ -1,6 +1,7 @@
 package com.lt.business;
-
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
 
 import com.lt.bean.Admin;
 import com.lt.bean.Catlog;
@@ -9,6 +10,7 @@ import com.lt.bean.Professor;
 import com.lt.bean.Student;
 import com.lt.bean.User;
 import com.lt.client.AdminMenu;
+import com.lt.client.ProfessorMenu;
 import com.lt.dao.AdminDAOImpl;
 import com.lt.dao.AdminDAOInterface;
 import com.lt.dao.CourseDAOImpl;
@@ -16,162 +18,150 @@ import com.lt.dao.CourseDAOInterface;
 import com.lt.dao.CoursecatalogDAOImpl;
 import com.lt.dao.CoursecatalogDAOInterface;
 import com.lt.dao.ProfessorDAOImpl;
-import com.lt.dao.ProfessorDAOInterface;
 import com.lt.dao.StudentDAOImpl;
 import com.lt.dao.StudentDAOInterface;
 import com.lt.dao.UserDAOImpl;
 import com.lt.dao.UserDAOInterface;
 import com.lt.exception.CourseFoundException;
 import com.lt.exception.CourseNotFoundException;
-
-/**
- * 
+/*
  * @author G4-FullStackGroup
- * Implementations of Admin Operations
- * 
+ * Implementations of AdminServices 
  */
 public class AdminImplService implements AdminInterface
 {
+	private static volatile AdminImplService instance = null;
 
-	CourseInterface course1 = new CourseImplService();
+	private static Logger logger = Logger.getLogger(AdminImplService.class);
+	CourseInterface course1 = CourseImplService.getInstance();
 	Course course=new Course();
-    AdminDAOInterface ai=new AdminDAOImpl();
-    
-    /**
+	AdminDAOInterface ai= AdminDAOImpl.getInstance();
+
+	private AdminImplService()
+	{
+	}
+	/**
+	 * Method to make AdminImplService Singleton
+	 * @return
+	 */
+	public static AdminImplService getInstance()
+	{
+		if(instance == null)
+		{
+			synchronized(AdminImplService.class){
+				instance = new AdminImplService();
+			}
+		}
+		return instance;
+	}
+	/*
 	 * Method to approve a Student 
 	 * @param studentName
 	 * @throws StudentNotFoundException 
 	 */
 	@Override
-	public void approveStudent(String studentName) 
+	public boolean approveStudent(int studentId) 
 	{
-		
-		StudentDAOInterface si=new StudentDAOImpl();
-		for( Student s: si.getStudentList())
-		{
-			if((s.getStudentName().equalsIgnoreCase(studentName)) && (s.getApproved()==0))
-			{
-				if(ai.adminApproval(studentName))
-				{
-					System.out.println(studentName+" "+"has been approved by admin please try to login");
-				}
-				else
-					System.out.println(studentName+" "+"has not been approved");
-			}		
-		}
+		return ai.adminApproval(studentId);
 	}
-	
-	/**
+	/*
 	 * Method to add professor to user DB
-	 * @param name,password,contact,emailId,address
-	 * @throws UserNotAddedException
+	 * @param name,password
+	 * 
 	 */
 	@Override
-	public boolean addProfessor(String name, String password, Long contact, String emailId, String address)
+	public boolean addProfessor(String name, String password)
 	{
 		boolean checkProf=true;
 		int profRole=2;
-		UserDAOInterface d1=new UserDAOImpl();
+		UserDAOInterface d1=UserDAOImpl.getInstance();
 		for(User u: d1.getUserCredential())
 		{
 			if(u.getUsername().equalsIgnoreCase(name))
 			{
-				 checkProf=false;
+				checkProf=false;
+				break;
 			}
 		}
 		if(checkProf)
 		{
 			d1.signupUser(name, password, profRole);
+			checkProf=true;
 		}
 		return checkProf;
 	}
-	
-	/**
+	/*
 	 * Method to add Course to Course 
-	 * @param courseId
 	 * @throws CourseFoundException
 	 */
 	@Override
 	public void addCourses() throws CourseFoundException 
 	{
-		AdminDAOInterface adminDao=new AdminDAOImpl();
-		CoursecatalogDAOInterface ci=new CoursecatalogDAOImpl();
-		System.out.println("Select the option from below course list");	
-		System.out.println("CourseId  "+"|"+" CourseName");
-		System.out.println("----------------------------");
+		AdminDAOInterface adminDao=AdminDAOImpl.getInstance();
+		CoursecatalogDAOInterface ci=CoursecatalogDAOImpl.getInstance();
+		logger.info("Select the option from below course list");	
+		logger.info("CourseId  "+"|"+" CourseName");
+		logger.info("----------------------------");
 		for(Catlog c:ci.viewCourses())
 		{
-			if(c.getCourseId()<=9)
-			{
-				System.out.println(c.getCourseId()+"         | "+c.getCourseName());
-			}
-			else
-			{
-				System.out.println(c.getCourseId()+"        | "+c.getCourseName());
-			}
+			logger.info(c.getCourseCode()+"         | "+c.getCourseName());
+
 		}
-		System.out.println("Enter the CourseId from the list to be added");
-		Scanner in5 = new Scanner(System.in);
-		int cId = in5.nextInt();
-		for(Catlog cc:ci.viewCourses())
+		logger.info("Enter the CourseId from the list to be added");
+		Scanner in = new Scanner(System.in);
+		String CourseCode = in.next();
+		for(Catlog catlog : ci.viewCourses())
 		{
-			if((cc.getCourseId()==cId))
+			if(CourseCode.equals(catlog.getCourseCode()))
 			{
-				String cname=cc.getCourseName();
-				if(adminDao.addCourse(cId,cname))
+				String CourseName=catlog.getCourseName();
+				//String ProfName=
+				double CourseFee = catlog.getCourseFee();
+				if(adminDao.addCourse(CourseCode,CourseName,CourseFee))
 				{
-					System.out.println(" ");
+					logger.info("course Added Sucessfully......");
 					break;
 				}
 				else
-					System.out.println("Course was not added, please try again!!");
+					logger.info("Course was not added, please try again!!");
 			}	
 		}		
 	}
-	
-	
-	/**
-	 * Method to Delete Course from Course 
+	/*
+	 * Method to Delete Course from Course table 
 	 * @param courseId
 	 * @throws CourseNotFoundException 
 	 */
 	@Override
-	public boolean deleteCourses() throws CourseNotFoundException 
+	public void deleteCourses() throws CourseNotFoundException 
 	{
-		
 		AdminDAOInterface adminDao1=new AdminDAOImpl();
-		System.out.println("Select the courseId to be deleted"+"\n");
-		CourseDAOInterface c1=new CourseDAOImpl();
-		System.out.println("CourseId  "+"|"+" CourseName");
-		System.out.println("----------------------------");
-		for(Course c:c1.getCourse())
+		logger.info("Select the courseId to be deleted"+"\n");
+		CourseDAOInterface c1=CourseDAOImpl.getInstance();
+		logger.info("CourseCode  "+"|"+" CourseName");
+		logger.info("----------------------------");
+		for(Course course : c1.getCourse())
 		{
-			if(c.getCourseId()<=9)
-			{
-				System.out.println(c.getCourseId()+"         | "+c.getCourseName());
-			}
-			else
-			{
-				System.out.println(c.getCourseId()+"        | "+c.getCourseName());
-			}
+			logger.info(course.getCourseCode()+"        | "+course.getCourseName());
 		}
-		System.out.println("Enter the CourseId from the list to be deleted");
-		Scanner in5 = new Scanner(System.in);
-		int cId = in5.nextInt();	
+		logger.info("Enter the CourseId from the list to be deleted");
+		Scanner in = new Scanner(System.in);
+		String CourseId = in.next();	
 		for(Course cc:c1.getCourse())
 		{
-			if(cc.getCourseId()==cId)
+			if(CourseId.equals(cc.getCourseCode()))
 			{
-				String cname=cc.getCourseName();
-				if(adminDao1.deleteCourse(cId,cname))
+				String courseName=cc.getCourseName();
+				if(adminDao1.deleteCourse(CourseId,courseName))
 				{
-					return true;
+					logger.info("Course have been deleted Successfully..");
+					break;
 				}
-				else
-					return false;
+				else {
+					logger.info("Course was not deleted, please try again!!");
+				}
 			}
-		}	
-		return false;
-		
+		}					
 	}
+
 }

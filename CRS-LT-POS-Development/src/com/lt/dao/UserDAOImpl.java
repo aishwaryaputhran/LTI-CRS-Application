@@ -9,162 +9,210 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.lt.bean.Student;
 import com.lt.bean.User;
-import com.lt.exception.UserNotFoundException;
-import com.lt.util.DBUtils;
-import com.mysql.jdbc.EscapeTokenizer;
-import com.mysql.jdbc.Statement;
+import com.lt.business.StudentImplService;
+import com.lt.utils.DBUtil;
 
+
+/**
+ * @author G4-FullStackGroup
+ * Dao Class implementation for UserDAOImpl
+ * 
+ */
 public class UserDAOImpl implements UserDAOInterface {
-	
-	//private static Logger logger = Logger.getLogger(UserDAOImpl.class);
+	// method to verify credential instead of business
 
-	public static List<User> userList = new ArrayList<User>();
+	private static volatile UserDAOImpl instance = null;
 
+	private UserDAOImpl()
+	{
+	}
+	/**
+	 * Method to make UserDAOImpl Singleton
+	 * @return
+	 */
+	public static UserDAOImpl getInstance()
+	{
+		if(instance == null)
+		{
+			synchronized(UserDAOImpl.class){
+				instance = new UserDAOImpl();
+			}
+		}
+		return instance;
+	}
+
+	private static Logger logger = Logger.getLogger(UserDAOImpl.class);
+	/*
+	 * Method to sign up User
+	 * @param username,password,role
+	 *
+	 */
+	public boolean signupUser(String username, String password, int role) {
+
+		Connection connection = null;
+		PreparedStatement preparedStatement= null;
+		ResultSet resultSet = null;
+
+		try {
+			connection = DBUtil.getConnection();
+			String query = "insert into user(user_name, password, role_id) values (?, ?, ?)";
+			PreparedStatement statement = connection.prepareStatement(query);
+
+			statement.setString(1, username);
+			statement.setString(2, password);
+			statement.setInt(3, role);
+			int row = statement.executeUpdate();
+
+			if(row==1)
+				return true;
+			else
+				return false;
+		}
+		catch(SQLException e)
+		{
+			logger.info(e.getMessage());
+		}
+		return true;
+	}
+	/*
+	 * Method to verifyCredential
+	 */
+	@Override
 	public List<User> getUserCredential() 
 	{	
-		Connection conn = DBUtils.getConnection();
+		List<User> userList = new ArrayList<User>();
+		Connection conn = DBUtil.getConnection();
 		try 
 		{
-				String str = "select * from user";
-				PreparedStatement myStmt = conn.prepareStatement(str);
-				ResultSet myRs = myStmt.executeQuery();
-				
-				while(myRs.next())
-				{
-					String username = myRs.getString(1);
-					String  password= myRs.getString(2);
-					int roleID= myRs.getInt(3);
-					userList.add(new User(username,password,roleID));
-				}	
-				
-				return userList;
+			String str = "select * from user";
+			PreparedStatement myStmt = conn.prepareStatement(str);
+			ResultSet myRs = myStmt.executeQuery();
+
+			while(myRs.next())
+			{
+				String username = myRs.getString(1);
+				String  password= myRs.getString(2);
+				int roleID= myRs.getInt(3);
+				userList.add(new User(username,password,roleID));
+			}	
+
+			return userList;
 		} 
 		catch (SQLException ex) 
 		{
-			System.out.println("Exception occurred....");
+			logger.info("Exception occurred....");
 		} 
-		finally
-		{
-			try
-			{
-				conn.close();
-			} 
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-			
-		}
+
 		return userList; 
 	}
-
-	public boolean signupUser(String username, String password, int role) 
+	/*
+	 * Method to verifyCredential
+	 * @param username,password
+	 * @throws Exception
+	 */
+	@Override
+	public boolean verifyCredential(String Username, String password) throws SQLException
 	{
-		User user = new User();
-		/*
-		 * getUserCredential(); user.setUsername(username); user.setPassword(password);
-		 * // user.setRole(role); userList.add(user);
-		 */
-		Connection conn = DBUtils.getConnection();
-		try 
+		Connection connection = null;
+		PreparedStatement preparedStatement= null;
+		ResultSet resultSet = null;
+		try
 		{
-			String str = "insert into user (username,password,roleID) values (?,?,?)";
-			PreparedStatement myStmt = conn.prepareStatement(str);
-			myStmt.setString(1, username);
-			myStmt.setString(2, password);
-			myStmt.setInt(3, role);
-			myStmt.executeUpdate();
-			
-			System.out.println(username+" "+"added sucessfully");
-		} 
-		catch (SQLException ex) 
-		{
-			ex.printStackTrace();
-			System.out.println("Exception occurred....");
-		} 
-		finally
-		{
-			try
-			{
-				conn.close();
-			} 
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-			
-		}
-		return true;
-	}
+			connection = DBUtil.getConnection();
 
-	public int verifyCredential(String loginUsername, String loginpassword)
-	{
-		int value = 0;
-		Connection conn = DBUtils.getConnection();
-		try 
-		{
-			String str = "select password, roleID from user where username=?";
-			PreparedStatement myStmt = conn.prepareStatement(str);
-			myStmt.setString(1, loginUsername);
-			ResultSet myRs = myStmt.executeQuery();
-			
-			myRs.next();
-			if(loginpassword.equals(myRs.getString("password")))
-			{ 	
-				value = myRs.getInt("roleID");
-			}
-			else
-			{
-				return value;
-			}	
-		} 
-		catch (SQLException ex) 
-		{
-			System.out.println("Exception occurred....");
-		} 
-		finally
-		{
-			try
-			{
-				conn.close();
-			} 
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}	
-		}
-		return value; 
-	}
+			String str = "select password from user where user_name = ?";
 
+			preparedStatement=connection.prepareStatement(str);
+			preparedStatement.setString(1,Username);
+			resultSet = preparedStatement.executeQuery();
+
+			if(resultSet.next()) {
+				if(password.equals(resultSet.getString("password")))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+		catch(SQLException ex)
+		{
+			logger.info("Something went wrong, please try again! "+ ex);
+		}
+
+		return false; 
+	}
+	/*
+	 * Method to updateUserPassword
+	 * @param username,password
+	 * 
+	 */
 	public boolean updateUserPassword(String username, String newPassword) 
 	{
-		Connection conn = DBUtils.getConnection();
-		try 
-		{
-			String str = "update user set password = ? where username=?";
-			PreparedStatement myStmt = conn.prepareStatement(str);
-			myStmt.setString(1, newPassword);
-			myStmt.setString(2, username);	
-			myStmt.executeUpdate();
+		Connection connection=null; 
+		PreparedStatement preparedStatement= null;
+		ResultSet resultSet = null;
+		try {
+
+			connection=DBUtil.getConnection();
+
+			String str = "update user set password = ? where user_name=?";
+
+			preparedStatement = connection.prepareStatement(str);
+			preparedStatement.setString(1, newPassword);
+			preparedStatement.setString(2, username);
+
+			int row = preparedStatement.executeUpdate();
+			if(row==1)
+				return true;
+			else
+				return false;
+
 		} 
 		catch (SQLException ex) 
 		{
-			System.out.println("Exception occurred....");
-		} 
-		finally
-		{
-			try
-			{
-				conn.close();
-			} 
-			catch (SQLException e)
-			{
-				e.printStackTrace();
+
+			logger.info("Exception occurred...."+ex.getMessage());
+		}
+		return false; 
+
+	}
+	/**
+	 * Method to get Role
+	 * @param userId
+	 * @throws SQLException
+	 */
+	@Override
+	public String getRole(String userId) throws SQLException {
+		Connection connection=null; 
+		PreparedStatement preparedStatement= null;
+		ResultSet resultSet = null;
+
+		try {
+			connection=DBUtil.getConnection();
+			if(connection != null) {
+				//	logger.info("****connection established-------------");
 			}
-			
-		} 
-		return true;
-	}	
+			String roleId="select role_id from user where user_name = ? ";
+			preparedStatement = connection.prepareStatement(roleId);
+			preparedStatement.setString(1, userId);
+			resultSet = preparedStatement.executeQuery();
+
+			if(resultSet.next())
+			{
+				return resultSet.getString("role_id");
+			}
+
+		}
+		catch(SQLException e)
+		{
+			logger.info(e.getMessage());
+		}
+
+		return null;
+	}
+
 }

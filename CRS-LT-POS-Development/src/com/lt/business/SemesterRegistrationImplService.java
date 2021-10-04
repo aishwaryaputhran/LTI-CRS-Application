@@ -1,94 +1,84 @@
 package com.lt.business;
-
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
 
 import com.lt.dao.SemesterRegistrationDAOImpl;
 
+/*
+ * 
+ * @author G4-FullStackGroup
+ * Interface for SemesterRegistrationImplService 
+ * 
+ */
 public class SemesterRegistrationImplService implements SemesterRegistrationInterface 
 {
+	private static Logger logger = Logger.getLogger(SemesterRegistrationImplService.class);
 	static int counter=100;
 
+	/**
+	 * Method to semesterMenu
+	 * 
+	 */
 	public void semesterMenu() 
 	{
-		PaymentInterface pi = new PaymentImplService();
-		SemesterRegistrationDAOImpl sm = new SemesterRegistrationDAOImpl();
-		RegisteredCourseInterface rm= new RegisteredCourseImplService();
-		
+		PaymentInterface pi = PaymentImplService.getInstance();
+		SemesterRegistrationDAOImpl sm = SemesterRegistrationDAOImpl.getInstance();
+		RegisteredCourseInterface rm= RegisteredCourseImplService.getInstance();
+
 		if(sm.getRegisteredStudentById(counter))
 		{
 			counter++;
 		}
-		System.out.println("Your studentID is:"+" "+ counter);
+		logger.info("Your studentID is:"+" "+ counter);
 		Scanner in = new Scanner(System.in);
-		System.out.println("Enter student Name: ");
+		logger.info("Enter student Name: ");
 		String stdName = in.next();
-		System.out.println("Choose the Semester:-");
-		System.out.println("1. Semester-1"+"\n"+"2. Semester-2"+"\n"+"3. Semester-3"+"\n"+"4. Semester-4"+"\n"+"5. Exit");
+		logger.info("Choose the Semester:-");
+		logger.info("1. Semester-1"+"\n"+"2. Semester-2"+"\n"+"3. Semester-3"+"\n"+"4. Semester-4"+"\n"+"5. Exit");
 		int selection = in.nextInt();
-		
-		
+
+
 		switch(selection)
 		{
-		case 1: System.out.println("Semester-1:-");
+		case 1: logger.info("Semester-1:-");
 		if(rm.getStudentDetails(counter, stdName, selection))
 		{
 			sm.getSemFee(selection);
-			pi.getPayment();  
+
 		}
 		break;
 
-		case 2: System.out.println("Semester-2:-");
+		case 2: logger.info("Semester-2:-");
 		if(rm.getStudentDetails(counter, stdName, selection))
 		{
 			sm.getSemFee(selection);
-			pi.getPayment();  
-		}
-		break;
 
-
-		case 3: System.out.println("Semester-3:-");
-		if(rm.getStudentDetails(counter, stdName, selection))
-		{
-			sm.getSemFee(selection);
-			pi.getPayment();  
 		}
 		break;
 
 
-		case 4: System.out.println("Semester-4:-");
+		case 3: logger.info("Semester-3:-");
 		if(rm.getStudentDetails(counter, stdName, selection))
 		{
 			sm.getSemFee(selection);
-			pi.getPayment();  
+
 		}
 		break;
 
 
-		case 5: System.out.println("Exit");
+		case 4: logger.info("Semester-4:-");
+		if(rm.getStudentDetails(counter, stdName, selection))
+		{
+			sm.getSemFee(selection);
+
+		}
+		break;
+
+
+		case 5: logger.info("Exit");
 		break;
 
 		}
 	}
-
-
-	//	@Override
-	//	public String addCourse() {
-	//		// TODO Auto-generated method stub
-	//		return null;
-	//	}
-	//
-	//	@Override
-	//	public String dropCourse() {
-	//		// TODO Auto-generated method stub
-	//		return null;
-	//	}
-	//
-	//	@Override
-	//	public String paymentStatus() {
-	//		// TODO Auto-generated method stub
-	//		return null;
-	//	}
-
-
 }
-

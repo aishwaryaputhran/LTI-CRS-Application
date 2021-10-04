@@ -1,5 +1,4 @@
 package com.lt.dao;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,50 +6,71 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.lt.bean.Admin;
-import com.lt.bean.Catlog;
-import com.lt.bean.Course;
-import com.lt.util.DBUtils;
+import org.apache.log4j.Logger;
 
+import com.lt.bean.Catlog;
+import com.lt.utils.DBUtil;
+
+/*
+ * @author G4-FullStackGroup
+ * Dao Class for CoursecatalogDAO implementation
+ * 
+ */
 public class CoursecatalogDAOImpl implements CoursecatalogDAOInterface
 {
+	private static volatile CoursecatalogDAOImpl instance = null;
+	
+	private static Logger logger = Logger.getLogger(CoursecatalogDAOImpl.class);
+	
+	private CoursecatalogDAOImpl()
+	{
+	}
+	/*
+	 * Method to make CoursecatalogDAOImpl Singleton
+	 * @return
+	 */
+	public static CoursecatalogDAOImpl getInstance()
+	{
+		if(instance == null)
+		{
+			synchronized(CoursecatalogDAOImpl.class){
+				instance = new CoursecatalogDAOImpl();
+			}
+		}
+		return instance;
+	}
+
+	/*
+	 * Method to view list of Course catalog 
+	 * @returns list of catalog
+	 */
 	static List<Catlog> catalogList= new ArrayList<>();
 	@Override
 	public List<Catlog> viewCourses()
 	{
-		Connection conn = DBUtils.getConnection();
+		Connection conn = DBUtil.getConnection();
 		try 
 		{
-				String str = "select * from courseCatalog";
-				PreparedStatement myStmt = conn.prepareStatement(str);
-				ResultSet myRs = myStmt.executeQuery();
-				
-				while(myRs.next())
-				{
-					int courseId = myRs.getInt(1); 
-	                String courseName = myRs.getString(2);
-	                catalogList.add(new Catlog(courseId,courseName));	
-				}
+			String str = "select course_code, course_name, course_fee from course_catalog";
+			PreparedStatement myStmt = conn.prepareStatement(str);
+			ResultSet myRs = myStmt.executeQuery();
+
+			while(myRs.next())
+			{
+				String courseCode = myRs.getString(1); 
+				String courseName = myRs.getString(2);
+				double courseFee = myRs.getDouble(3); 
+				catalogList.add(new Catlog(courseCode,courseName,courseFee));	
+			}
 		} 
 		catch (SQLException ex) 
 		{
-			System.out.println("Exception occurred....");
+			logger.error("Exception occurred....");
 		} 
-		finally
-		{
-			try
-			{
-				conn.close();
-			} 
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-			
-		}
+
 		return catalogList; 
-		
+
 	}
-	
+
 
 }

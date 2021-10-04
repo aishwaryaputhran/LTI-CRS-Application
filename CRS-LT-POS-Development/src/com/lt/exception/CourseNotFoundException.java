@@ -1,23 +1,26 @@
 package com.lt.exception;
 
-public class CourseNotFoundException extends Exception
-{	
-	private int courseId;
+/*
+ * @author G4-FullStackGroup
+ * Implementations of CourseNotFoundException extends Exception
+ */
+public class CourseNotFoundException extends Exception{
 	
-	public CourseNotFoundException(int courseId)
+	private String courseCode;
+
+	public CourseNotFoundException(String courseCode)
 	{	
-		this.courseId = courseId;
+		this.courseCode = courseCode;
 	}
 
-	public int getCourseId()
+	public String getCourseCode()
 	{
-		return courseId;
+		return courseCode;
 	}
-	
+
 	@Override
 	public String getMessage() 
 	{
-		return "CourseId: " + courseId + " not found!";
+		return "Course : " + courseCode + " not found!";
 	}
 }
-

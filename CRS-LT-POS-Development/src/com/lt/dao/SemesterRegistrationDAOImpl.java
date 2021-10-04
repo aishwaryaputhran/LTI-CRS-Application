@@ -5,12 +5,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.lt.bean.SemesterRegistration;
-import com.lt.bean.Student;
+import org.apache.log4j.Logger;
 
+import com.lt.bean.SemesterRegistration;
+import com.lt.business.StudentImplService;
+/**
+ * @author G4-FullStackGroup
+ * class for implementation of SemesterRegistrationDAO
+ * 
+ */
 public class SemesterRegistrationDAOImpl implements SemesterRegistrationDAOInterface
 {
-	 
+	private static volatile SemesterRegistrationDAOImpl instance = null;
+	private static Logger logger = Logger.getLogger(SemesterRegistrationDAOImpl.class);
+	private SemesterRegistrationDAOImpl()
+    {
+    }
+    /**
+    * Method to make SemesterRegistrationDAOImpl Singleton
+    * @return
+    */
+    public static SemesterRegistrationDAOImpl getInstance()
+    {
+    if(instance == null)
+    {
+    synchronized(SemesterRegistrationDAOImpl.class){
+    instance = new SemesterRegistrationDAOImpl();
+    }
+    }
+    return instance;
+    }
+ 
+	
+	
 	List<SemesterRegistration> studentreg=new ArrayList<SemesterRegistration>(); 
 	
 	public void getSemFee(int key) 
@@ -25,7 +52,7 @@ public class SemesterRegistrationDAOImpl implements SemesterRegistrationDAOInter
 	    {  
 	    	if(m.getKey()==Integer.valueOf(key)) 
 	    	{
-	    		System.out.println("Amount is: "+m.getValue());    
+	    		logger.info("Amount is: "+m.getValue());    
 	    	}
 	    }  
 	}
@@ -41,7 +68,11 @@ public class SemesterRegistrationDAOImpl implements SemesterRegistrationDAOInter
 		return studentreg;
 	}
 	
-	
+	/**
+ 	 * Method to get Registered Student By Id
+ 	 * @param: studentId
+ 	 * @return: return the boolean values
+ 	 */
 	public boolean getRegisteredStudentById(int studentId)
 	{
 		boolean check=false;
@@ -57,7 +88,11 @@ public class SemesterRegistrationDAOImpl implements SemesterRegistrationDAOInter
 		}
 		return check;
 	}
-	
+	/**
+ 	 * Method to add Registered Student
+ 	 * @param: studentId,studentName,semester
+ 	 * @return: return the boolean values
+ 	 */
 	public boolean addRegisteredStudent(int studentId, String studentName, int semester)
 	{
 		studentreg.add(new SemesterRegistration(studentId,studentName,semester));

@@ -1,40 +1,98 @@
 package com.lt.bean;
+import com.lt.constants.NotificationType;
+
+/**
+ * 
+ * @author G4-FullStackGroup
+ * Notification class
+ * 
+ */
 
 public class Notification {
-
-	private int NotificationId;
-	private String Message;
-	private String Status;
-	private int StudentId;
+	private int notificationId;
+	private int studentId;
+	private NotificationType type;
+	private String referenceId;
+	
+	/**
+	 * Parameterized constructor
+	 * @param notificationId
+	 * @param studentId
+	 * @param type
+	 * @param referenceId
+	 */
+	public Notification(int notificationId,int studentId, NotificationType type,String referenceId)
+	{
+		this.notificationId = notificationId;
+		this.studentId = studentId;
+		this.type = type;
+		this.referenceId = referenceId;
+	}
+	
+	/**
+	 * Method to get Notification Id
+	 * @return Notification Id
+	 */
 	public int getNotificationId() {
-		return NotificationId;
+		return notificationId;
 	}
-	public void setNotificationId(int notificationId) {
-		NotificationId = notificationId;
-	}
-	public String getMessage() {
-		return Message;
-	}
-	public void setMessage(String message) {
-		Message = message;
-	}
-	public String getStatus() {
-		return Status;
-	}
-	public void setStatus(String status) {
-		Status = status;
-	}
+	
+	/**
+	 * Method to get Student Id of student enrolled in the course
+	 * @return Student Id
+	 */
 	public int getStudentId() {
-		return StudentId;
+		return studentId;
 	}
+	
+	/**
+	 * Method to set Student Id of student enrolled in the course
+	 * @param studentId
+	 */
 	public void setStudentId(int studentId) {
-		StudentId = studentId;
+		this.studentId = studentId;
 	}
+	
+	/**
+	 * Method to get Notification Type
+	 * @return Notification Type
+	 */
+	public NotificationType getType() {
+		return type;
+	}
+	
+	/** 
+	 * Method to set Notification Type
+	 * @param type
+	 */
+	public void setType(NotificationType type) {
+		this.type = type;
+	}
+
+	/**
+	 * Method to get Reference Id
+	 * @return Reference Id
+	 */
+	public String getReferenceId() {
+		return referenceId;
+	}
+
+	/**
+	 * Method to set Reference Id
+	 * @param referenceId
+	 */
+	public void setReferenceId(String referenceId) {
+		this.referenceId = referenceId;
+	}
+
 	@Override
 	public String toString() {
-		return "Notification [NotificationId=" + NotificationId + ", Message=" + Message + ", Status=" + Status
-				+ ", StudentId=" + StudentId + "]";
+		return "Notification [notificationId=" + notificationId + ", studentId=" + studentId + ", type=" + type
+				+ ", referenceId=" + referenceId + "]";
 	}
 	
 	
 }
+	
+	
+	

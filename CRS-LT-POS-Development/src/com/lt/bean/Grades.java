@@ -1,5 +1,11 @@
 package com.lt.bean;
 
+/**
+ * 
+ * @author G4-FullStackGroup
+ * Grades Class
+ * 
+ */
 public class Grades {
 
 	private int StudentId;

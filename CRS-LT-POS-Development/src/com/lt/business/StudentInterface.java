@@ -2,18 +2,64 @@ package com.lt.business;
 
 import java.util.List;
 
-import com.lt.bean.Course;
-import com.lt.bean.Student;
-import com.lt.client.StudentMenu;
+import com.lt.constants.Gender;
+import com.lt.exception.StudentNotRegisteredException;
 
 public interface StudentInterface {
-
-	public boolean login(String studentName, String studentPassword);
-	public boolean signup(String username,String password, long contact, String email, String address);
-	public String viewGradeCard();
-	public String courseSelection();
-	public String payFee();
-	public boolean addCourse();
-	public boolean dropCourse();
-
+		/**
+		 * Method to register a student, although student can't login until it's approved by admin
+		 * @param username
+		 * @param password
+		 * @param contact
+		 * @param email
+		 * @param branch
+		 * @param address
+		 * @return boolean value 
+		 * @throws StudentNotRegisteredException
+		 */
+	
+	public boolean signup(String username,String password, long contact, String email, String address, String branch) throws Exception;
+		public boolean login(String studentName, String studentPassword);
+		
+		/*
+		 * Method to viewGradeCard
+		 * 
+		 */
+		public String viewGradeCard();
+		/*
+		 * Method to get courseSelection 
+		 */
+		public String courseSelection();
+		/*
+		 * Method to get payFee
+		 * 
+		 */
+		public String payFee();
+		/*
+		 * Method to addCourse
+		 * 
+		 */
+		public boolean addCourse();
+		/*
+		 * Method to dropCourse
+		 * @return boolean value if it is dropped or not
+		 */
+		public boolean dropCourse();
+		/*
+		 * Method to get StudentId
+		 * @param userName
+		 * @return studentId
+		 */
+		int getStudentId(String userName);
+		/*
+		 * Method to get generateStudentId
+		 * 
+		 */
+		int generateStudentId();
+		/*
+		 * Method to get isApproved
+		 * @param StudentId
+		 */
+		boolean isApproved(int StudentId);
 }
+	

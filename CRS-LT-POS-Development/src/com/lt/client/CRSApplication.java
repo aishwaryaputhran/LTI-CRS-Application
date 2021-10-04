@@ -1,126 +1,166 @@
 package com.lt.client;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Date;
 import java.util.Scanner;
 
-import org.apache.log4j.Logger;
-
-import com.lt.bean.Course;
-import com.lt.bean.Student;
-import com.lt.business.AdminImplService;
-import com.lt.business.AdminInterface;
-import com.lt.business.CourseImplService;
-import com.lt.business.CourseInterface;
-import com.lt.business.GradeCardImplService;
-import com.lt.business.GradeCardInterface;
-import com.lt.business.SemesterRegistrationImplService;
-import com.lt.business.SemesterRegistrationInterface;
 import com.lt.business.StudentImplService;
 import com.lt.business.StudentInterface;
 import com.lt.business.UserImplService;
 import com.lt.business.UserInterface;
-import com.lt.dao.UserDAOImpl;
-import com.lt.dao.UserDAOInterface;
-
+/*
+ * @author G4-FullStackGroup
+ * Implementations of CRSApplication Services 
+ */
 public class CRSApplication {
-	
-	public static void main(String[] args)
+	static boolean isloggedin = false;
+	public static void main(String[] args) throws Exception
 	{
-		StudentMenu studentMenu=new StudentMenu();
-		ProfessorMenu professorMenu= new ProfessorMenu();
-		AdminMenu adminMenu=new AdminMenu();
-		
-		System.out.println("Welcome to Course Registration System");
-		System.out.println("**************************************");
-		System.out.println("\n"+"Select the below option to proceed further");
-		System.out.println("1. Login"+"\n"+ "2. Signup"+"\n"+"3. Update Password"+"\n"+"4. Exit"+"\n");
 		Scanner in1 = new Scanner(System.in);
-		int selection = in1.nextInt(); 
+		CRSApplication crsApplication=new CRSApplication();
+		crsApplication.displayMainMenu();
 
+		int selection = in1.nextInt(); 
 		switch(selection)
 		{ 
-			case 1: int role=login();
-			if(role!=0)
-			{ 
-				if(role==1)
-				{
-					studentMenu.studentChecklist();
-				 }
-			     else if(role==2)
-				 {
-			    	 professorMenu.professorChecklist();
-				 }
-				else if(role==3)
-				{
-					adminMenu.adminChecklist();
+		case 1: 
+			crsApplication.login();
+			break;
+
+		case 2: 
+			crsApplication.singup();
+			break;
+
+		case 3: 
+			crsApplication.passwordUpdate();
+			break;
+
+		default : 
+			break;
+		}
+	}
+	/**
+	 * Method to display MainMenu
+	 */
+	public  void displayMainMenu()
+	{
+		System.out.println("\n"+"**************************************");
+		System.out.println("Welcome to Course Registration System");
+		System.out.println("**************************************");
+		System.out.println("Select the below option to proceed further");
+		System.out.println("1. Login"+"\n"+ "2. Signup"+"\n"+"3. Update Password"+"\n"+"4. Exit"+"\n");
+		System.out.println("Enter choice : ");
+	}
+	/**
+	 * Method to login
+	 */
+	public boolean login() throws Exception
+	{
+		UserInterface user= UserImplService.getInstance();
+
+		Scanner in = new Scanner(System.in);
+
+		System.out.println("\n:::::User Login:::::\n"); 
+
+		System.out.println("Enter Username"); 
+		String username = in.nextLine();
+		System.out.println("Enter password"); 
+		String password = in.nextLine();
+
+		isloggedin=user.login(username, password);
+		String roleId = user.getRole(username);
+
+
+		if(isloggedin) {
+			displayCurrentDate();
+			if(roleId=="student")
+			{	
+				StudentInterface student = StudentImplService.getInstance();
+				int studentId =student.getStudentId(username);
+				boolean isApproved = student.isApproved(studentId);
+				if(isApproved) {
+					StudentMenu studentMenu=new StudentMenu();
+					studentMenu.studentChecklist(studentId);
+				}else {
+					System.out.println("You have not been approved by the admin!!! Please Contact Admin");
+					isloggedin=false;
 				}
-				else
-				{
-					System.out.println("Invalid Credential!!!");
-				}
+			}
+			else if(roleId=="professor")
+			{
+				ProfessorMenu professorMenu= new ProfessorMenu();
+				professorMenu.professorChecklist(username);
+			}
+			else if(roleId=="admin")
+			{
+				AdminMenu adminMenu=new AdminMenu();
+				adminMenu.adminChecklist();
 			}
 			else
 			{
-				System.out.println("Username or Password is invalid");
+				System.out.println("Invalid Credential!!!");
 			}
-			break;
-	
-			case 2: System.out.println("Signup"+"\n"); 
-					singup();
-					break;
-	
-			case 3: System.out.println("Update Password"+"\n"); 
-					passwordUpdate();
-					break;
-	
-			case 4: System.out.println("You are successfully logged out"); 
-					break;
+		}else {
+			System.out.println("\nUserName and Password is invalid\n");
+			login();
 		}
-	   }
-	public static int login()
-	{
-		int checkLogin=0;
-		Scanner in = new Scanner(System.in);
-		System.out.println("Enter Username"); 
-		String username = in.nextLine();
+		return false;
 
-		System.out.println("Enter password"); 
-		String password = in.nextLine();
-		
-		UserInterface userI= new UserImplService();
-		if(userI.login(username, password)!=0)
-		{
-			checkLogin=userI.login(username, password);
-			displayCurrentDate();
-			
-		}
-		return checkLogin;
 	}
-	
-	public static void singup()
+
+	/**
+	 * Method for sing up
+	 */
+	public  void singup() throws Exception
 	{
-		StudentMenu studentMenu1=new StudentMenu();
-		studentMenu1.studentSignup();		
+		Scanner in = new Scanner(System.in);
+
+		System.out.println("Enter Username");
+		String username = in.next();
+
+		System.out.println("Enter Password");
+		String password = in.next();
+
+		System.out.println("Enter Contact");
+		long contact = in.nextLong();   
+
+		System.out.println("Enter emailID");
+		String email = in.next();
+
+		System.out.println("Enter Address");
+		String address = in.next();
+
+		System.out.println("Enter Branch");
+		String branch = in.next();
+
+		StudentInterface sI= StudentImplService.getInstance();
+		sI.signup(username, password, contact, email, address, branch);
 	}
-	
-	public static void passwordUpdate()
+
+	/**
+	 * Method to Update password 
+	 */
+	public  void passwordUpdate()
 	{
-		UserInterface userImpl= new UserImplService();
+		UserInterface userImpl=UserImplService.getInstance();
 		Scanner in = new Scanner(System.in);
 		System.out.print("Enter username to be updated :"+"\n");    
-	    String uname = in.nextLine(); 
-	    System.out.print("Enter new password to be updated :"+"\n");    
-	    String pwrd = in.nextLine();
-	    userImpl.updatePassword(uname,pwrd);
-	}
-	public static void displayCurrentDate() {
+		String uname = in.nextLine(); 
+		System.out.print("Enter new password to be updated :"+"\n");    
+		String pwrd = in.nextLine(); 
 
+		if(userImpl.updatePassword(uname,pwrd))
+			System.out.println("\nYour Password Update Successfully......");
+		else
+			System.out.println("\nPassword not updated.....");
+
+	}
+	/**
+	 * Method to display Current Date and Time
+	 */
+	public static void displayCurrentDate()
+	{
 		Date currentDate = new Date();
 		LocalDateTime localDateTime = LocalDateTime.now();
-		System.out.println("Current Date and Time From Java 8 : " + localDateTime);
+		System.out.println(localDateTime);
 	}
 }
-
