@@ -1,0 +1,36 @@
+<!--**
+ *
+ * @author G4-FullStackGroup
+ * Student dashboard
+ *
+ *-->
+<div class="content" role="main">
+ 
+    <!-- Highlight Card -->
+    <div class="card highlight-card card-small">
+    <span>{{ title }}</span>
+    </div>
+    <!-- Highlight Card -->
+    <div class="toolbar" role="banner">
+    <div class="card highlight-card card-small">
+    <div class="main">
+    
+    <ul>
+    <li><a [routerLink]="['/dashboardstudent/registeredCourse']">Registered-Course</a></li>
+    <li><a [routerLink]="['/dashboardstudent/grade']">Grade-Card</a> </li>
+    <li><a [routerLink]="['/dashboardstudent/courseRegistration']">Course-Registration</a> </li>
+    <li><a [routerLink]="['/dashboardstudent/payment']">Payment</a> </li>
+    </ul>
+    </div>
+    </div>
+    
+    <div class="spacer"></div>
+    <div>{{today |date:'h:mm:ss a zzzz'}}</div>
+    <div class="main"><a (click)="logout()">Logout</a></div>
+    <!-- <button mat-icon-button (click)="logout()">
+    <mat-icon>Logout</mat-icon>
+    </button> -->
+    </div>
+    
+    <router-outlet></router-outlet>
+   </div>

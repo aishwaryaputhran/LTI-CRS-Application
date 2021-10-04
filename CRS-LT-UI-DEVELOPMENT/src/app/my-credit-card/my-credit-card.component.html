@@ -1,0 +1,28 @@
+<!--Template to do Payment-->
+<form ngForm>
+    <div class="form-group">
+    <label for="cardNo">Card No</label>
+    <input type="text" class="form-control" id="cardNo" required [(ngModel)]="paymentObj.cardNo"
+    name="cardNo">
+    </div>
+    <br>
+    <div class="form-group">
+    <label for="cardName">Card Name</label>
+    <input type="text" class="form-control" id="cardName" required [(ngModel)]="paymentObj.cardName"
+    name="cardName">
+    </div>
+    <br>
+    <div class="form-group">
+    <label for="cvv">CVV</label>
+    <input type="text" class="form-control" id="cvv" required [(ngModel)]="paymentObj.cvv"
+    name="cvv">
+    </div>
+    <br>
+    <div class="form-group">
+    <label for="amount">Amount</label>
+    <input type="text" class="form-control" id="amount" required [(ngModel)]="paymentObj.amount"
+    name="amount">
+    </div>
+    <br>
+    <button type="button" class="btn btn-primary" (click)="registerCourse()">Submit</button> 
+   </form>

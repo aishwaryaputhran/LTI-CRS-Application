@@ -1,0 +1,20 @@
+<!-- Template for View Courses -->
+<br>
+<div appHighlightdirective value = "lightblue">
+    <h3> Display All Courses </h3>
+</div>
+<br>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr appHighlightdirective value="greenyellow" *ngFor='let course of getData'>
+            <td>{{course.courseCode | uppercase}}</td>
+            <td>{{course.courseName}}</td> 
+        </tr>
+    </tbody>
+</table>

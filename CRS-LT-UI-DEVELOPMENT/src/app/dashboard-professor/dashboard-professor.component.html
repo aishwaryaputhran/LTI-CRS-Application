@@ -1,0 +1,32 @@
+<!--**
+ *
+ * @author G4-FullStackGroup
+ * Professor dashboard
+ *
+ *-->
+<div class="content" role="main">
+
+  <!-- Highlight Card -->
+  <div class="card highlight-card card-small">
+    <span>{{ title }}</span>
+  </div>
+    <!-- Highlight Card -->
+    <div class="toolbar" role="banner">
+      <div class="card highlight-card card-small">
+        <div class="main">
+
+          <ul>
+            <li><a [routerLink]="['/professor/registeredCourse']">Registered-Course</a></li>
+            <li><a [routerLink]="['/professor/viewCourse']">View All Course</a> </li>
+            <li><a [routerLink]="['/professor/grade']">Add Grade</a> </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div>{{today |date:'h:mm:ss a zzzz'}}</div>
+      <div class="main"><a href="#">Logout</a></div>
+    </div>
+
+  <router-outlet></router-outlet>
+</div>

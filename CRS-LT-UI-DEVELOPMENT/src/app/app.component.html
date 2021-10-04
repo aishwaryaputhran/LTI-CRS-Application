@@ -1,0 +1,38 @@
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
+<!-- * * * * * * * to get started with your project! * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<div class="content" role="main">
+  
+  <!-- Highlight Card -->
+  <div class="toolbar" role="banner">
+  <div class="card highlight-card card-small">
+    <div class="main">
+      
+      <ul>
+          <li ><a [routerLink]="['']">Login</a></li>
+          <li><a [routerLink]="['']">Register</a> </li>
+          <li><a [routerLink]="['']">Update Password</a> </li>
+      </ul>
+  </div>
+  </div> 
+ 
+  <div class="spacer"></div>
+    <div >{{today |date:'h:mm:ss a zzzz'}}</div>  
+</div> 
+
+<!-- <a [routerLink]="['/dashboardstudent']">Student-Details</a> -->
+
+  <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+  <!-- * * * * * * * * * * * The content above * * * * * * * * * * * -->
+  <!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+  <!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
+  <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+  <!-- * * * * * * * * * * End of Placeholder * * * * * * * * * * * -->
+  <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+  <router-outlet></router-outlet>

@@ -1,0 +1,29 @@
+
+<!--**
+ *
+ * @author G4-FullStackGroup
+ * User dashboard
+ *
+ *-->
+<!-- <div class="content" role="main"> -->
+
+    <!-- Highlight Card -->
+    <div class="card highlight-card card-small">
+        <span>{{ title }}</span>
+    </div>
+    <!-- Highlight Card -->
+    <div class="toolbar" role="banner">
+        <div class="card highlight-card card-small">
+            <div class="main">
+
+                <ul>
+                    <li><a [routerLink]="['login']">Login</a></li>
+                    <li><a [routerLink]="['signup']">Signup</a> </li>
+                    <li><a [routerLink]="['updatePassword']">Update Password</a> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <router-outlet></router-outlet>
+<!-- </div> -->

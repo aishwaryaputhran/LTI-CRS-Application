@@ -1,0 +1,23 @@
+<!-- Template for Grade Card details-->
+<br>
+<div appHighlightdirective value = "lightblue">
+ <h3> View Grade-Card </h3>
+</div>
+<br>
+<table class="table">
+ <thead>
+ <tr>
+ <th>Course Code</th>
+ <th>Course Name</th>
+ <th>Grade</th>
+ 
+ </tr>
+ </thead>
+ <tbody>
+ <tr appHighlightdirective value="greenyellow" *ngFor='let regCourse of getData'>
+ <td>{{regCourse.courseCode | uppercase}}</td>
+ <td>{{regCourse.courseName | uppercase}}</td>
+ <td>{{regCourse.grade}}</td>
+ </tr>
+ </tbody>
+</table>

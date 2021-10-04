@@ -1,0 +1,54 @@
+<!-- Template for Signup-->
+<h5>This section is to Signup Student</h5>
+<form ngForm>
+    <div class="form-group">
+        <label for="studentName">Student Name</label>
+        <input type="text" class="form-control" id="studentName" required [(ngModel)]="user.studentName" name="studentName">
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" required [(ngModel)]="user.password" name="password">
+    </div>
+    <div class="form-group">
+        <label for="studentContactNo">Student Contact No</label>
+        <input type="text" class="form-control" id="studentContactNo" required [(ngModel)]="user.studentContactNo" name="studentContactNo">
+    </div>
+    <div class="form-group">
+        <label for="studentEmailId">Student Email Id</label>
+        <input type="text" class="form-control" id="studentEmailId" required [(ngModel)]="user.studentEmailId" name="studentEmailId">
+    </div>
+    <div class="form-group">
+        <label for="studentAddress">Student Address</label>
+        <input type="text" class="form-control" id="studentAddress" required [(ngModel)]="user.studentAddress" name="studentAddress">
+    </div>
+    <div class="form-group">
+        <label for="branch">Branch</label>
+        <input type="text" class="form-control" id="branch" required [(ngModel)]="user.branch" name="branch">
+    </div>
+    <br>
+    <button type="button" class="btn btn-primary" (click)="createUser()">Submit</button>
+</form>
+ <br>
+ <br>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Password</th>
+            <th>Student Contact No</th>
+            <th>Student Email Id</th>
+            <th>Student Address</th>
+            <th>Branch</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr appHighlightdirective value="lightblue" *ngFor='let us of user'>
+            <td>{{us.studentName | uppercase}}</td>
+            <td>{{us.password  | uppercase}}</td>
+            <td>{{us.studentContactNo}}</td>    
+            <td>{{us.studentEmailId}}</td>  
+            <td>{{us.studentAddress}}</td>  
+            <td>{{us.branch}}</td>    
+        </tr>
+    </tbody>
+</table>
